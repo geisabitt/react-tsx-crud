@@ -1,25 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+import Footer from './components/footer';
+import Navbar from './components/navbar';
+import Cadastro from './pages/Cadastrar';
+import Consulta from './pages/Consulta';
+import ConsultaSaperx from './pages/ConsultaSaperx';
+import Editar from './pages/Editar';
+import Visualizar from './pages/Visualizar';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Navbar></Navbar>
+      <Routes>
+        <Route path="/" element={<Cadastro />} />
+        <Route path="/consulta" element={<Consulta />} />
+        <Route path="/consulta2" element={<ConsultaSaperx />} />
+        <Route path="/visualizar/:id" element={<Visualizar />} />
+        <Route path="/editar/:id" element={<Editar />} />
+      </Routes>
+      <Footer></Footer>
+    </Router>
   );
 }
 
