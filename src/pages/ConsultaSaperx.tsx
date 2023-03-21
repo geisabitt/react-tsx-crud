@@ -7,7 +7,7 @@ function Consulta() {
   const [data, setData] = useState<Cliente[]>([]);
 
   useEffect(() => {
-    fetch("api/schedule", {
+    fetch("/api/schedule", {
       method: "GET",
     })
       .then((response) => response.json())

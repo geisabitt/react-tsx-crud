@@ -1,6 +1,6 @@
 const PROXY_CONFIG = [
   {
-    context: ["/"],
+    context: ["/api"],
     target: "http://teste-frontend.saperx.com.br",
     secure: false,
     logLevel: "debug",
