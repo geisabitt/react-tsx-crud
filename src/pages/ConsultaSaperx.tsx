@@ -1,77 +1,67 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 
 import Cliente from '../interface/Cliente';
 
-function Consulta() {
+function ConsultaSaperx() {
   const [data, setData] = useState<Cliente[]>([]);
+  const [error, setError] = useState<string | null>(null); //alteração aqui
 
   useEffect(() => {
-    fetch("/api/schedule", {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
+    async function fetchData() { //alteração aqui
+      try {
+        const response = await fetch("http://teste-frontend.saperx.com.br/api/schedule");
+        if (!response.ok) {
+          throw new Error('Não foi possível obter os dados da API');
+        }
+        const data = await response.json();
         setData(data);
-      })
-      .catch((error) => console.log("error", error));
+        console.log(data);
+      } catch (error) { //alteração aqui
+        console.log('error');
+      }
+    }
+    fetchData(); //alteração aqui
   }, []);
 
-  function removePessoa() {
-    console.log("Clicou em remover");
+  function removePessoa(id: string){
+    console.log(id)
+  }
+
+  if (error) {
+    return <div>Erro ao carregar os dados: {error}</div>; //alteração aqui
   }
 
   return (
-    <div className="ajust">
-      <div className="mensagem"></div>
-      <table className="table table-striped">
-        <thead>
-          <tr>
-            <td scope="col">Nome</td>
-            <td scope="col">Telefone</td>
-            <td scope="col">Data de Nascimento</td>
-            <td scope="col">CPF</td>
-            <td scope="col">Email</td>
-            <td scope="col">Ações</td>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((cliente) => {
-            return (
-              <tr key={cliente.id}>
-                <td>{cliente.name}</td>
-                <td>{cliente.numbers}</td>
-                <td>{cliente.date_born}</td>
-                <td>{cliente.cpf}</td>
-                <td>{cliente.email}</td>
-                <td>
-                  <Link
-                    className="ver btn btn-outline-primary"
-                    to={"/visualizar/" + cliente.id}>
-                    Ver
-                  </Link>{" "}
-                  <Link
-                    className="editar btn btn-outline-primary"
-                    to={"/editar/" + cliente.id}>
-                    Editar
-                  </Link>{" "}
-                  <button
-                    className="deletar btn btn-outline-danger"
-                    onClick={() => {
-                      removePessoa();
-                    }}>
-                    Deletar
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <div className="pessoa"></div>
+    <div>
+      <h1>Dados da API:</h1>
+      {data.length ? (
+        <ul>
+          {data.map(item => (
+            <li key={item.id}>
+              <h2>{item.name}</h2>
+              <p>Email: {item.email}</p>
+              <p>CPF: {item.cpf}</p>
+              <p>Data de Nascimento: {item.date_born}</p>
+              {Array.isArray(item.numbers) && item.numbers.length ? (
+                <div>
+                  <h3>Números:</h3>
+                  <ul>
+                    {item.numbers.map(number => (
+                      <li key={number.id}>{number.number}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p>Nenhum número encontrado.</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div>Carregando dados...</div>
+      )}
     </div>
   );
 }
 
-export default Consulta;
+export default ConsultaSaperx;
